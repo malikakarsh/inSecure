@@ -1,4 +1,3 @@
-
 FROM php:7.4.5-apache
 
 ARG TIMEZONE
@@ -41,7 +40,7 @@ WORKDIR /root
 
 COPY shell.py /home
 
-RUN sed -i "s/sshUser/$USERNAME/g" /home/shell.py && \
+RUN sed -i "s/USERNAME/$USERNAME/g" /home/shell.py && \
     chmod +x /home/shell.py && \
     usermod --shell /home/shell.py $USERNAME
 
