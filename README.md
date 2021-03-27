@@ -6,6 +6,7 @@ Secure your apps
 
 To create virtual environment:
 ```
+$ cd backend
 $ virtual env
 ```
 - Activate virtual environment:
@@ -15,7 +16,8 @@ $ virtual env
 
 Install requirements:
 ```
+$ cd backend
 $ pip install -r requirements.txt
 ```
 
-Create `.env` file in project root using `.env.example`
+Create `.env` file in /backend using `.env.example`
