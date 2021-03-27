@@ -10,6 +10,8 @@
 /build
 
 # misc
+__pycache__/
+.vscode/
 .env
 env
 .DS_Store
