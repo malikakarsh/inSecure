@@ -7,8 +7,7 @@ import {
 	Select,
 	makeStyles,
 	FormLabel,
-	Button,
-	Input
+	Button
 } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { AddCircle, RemoveCircle } from "@material-ui/icons";
@@ -31,7 +30,8 @@ const useStyles = makeStyles(() => ({
 		justifyContent: "center",
 		alignItems: "center",
 		flexDirection: "column",
-		margin: 15
+		margin: 15,
+		maxWidth: "800px"
 	}
 }));
 
@@ -42,8 +42,9 @@ function Form() {
 		"https://d1q6f0aelx0por.cloudfront.net/product-logos/library-debian-logo.png?";
 
 	const imageTags = {
-		ubuntu: ["20.10", "20.04", "18.04", "16.04", "14.04"],
+		ubuntu: ["latest", "20.10", "20.04", "18.04", "16.04", "14.04"],
 		debian: [
+			"latest",
 			"stretch-slim",
 			"stretch-backports",
 			"stretch-20210326",
@@ -56,7 +57,7 @@ function Form() {
 
 	const classes = useStyles();
 	const [portFields, setPortFields] = useState([]);
-	const [baseImage, setBaseImage] = useState("ubuntu");
+	const [baseImage, setBaseImage] = useState("debian");
 	const [baseImageTag, setBaseImageTag] = useState(imageTags[baseImage][0]);
 	const [rootPassword, setRootPassword] = useState("");
 	const [userPassword, setUserPassword] = useState("");
@@ -64,13 +65,15 @@ function Form() {
 	const [hostName, setHostname] = useState("");
 	const [containerName, setContainername] = useState("");
 	const [exposedPorts, setExposedPorts] = useState([22]);
-	const [mappedPorts, setMappedPorts] = useState([]);
+	const [mappedPorts, setMappedPorts] = useState([""]);
 	const [timeZone, setTimeZone] = useState("");
 	const [banTime, setBantime] = useState(1800);
 	const [maxRetry, setMaxretry] = useState(10);
 
 	const baseImageChange = (e, f) => {
-		setBaseImage(f);
+		if (f) {
+			setBaseImage(f);
+		}
 	};
 
 	const baseImageTagChange = e => {
@@ -90,6 +93,7 @@ function Form() {
 						variant="outlined"
 						type="number"
 						required={true}
+						onChange={handleMappedChange}
 					/>
 				</Grid>
 				<Grid item xs={12} sm={5}>
@@ -99,6 +103,7 @@ function Form() {
 						label={"Exposed Port-" + fieldCount}
 						variant="outlined"
 						type="number"
+						onChange={handleExposedChange}
 						required={true}
 					/>
 				</Grid>
@@ -107,20 +112,30 @@ function Form() {
 				</IconButton>
 			</Grid>
 		];
-
+		let newExposedPorts = [...exposedPorts, { id: fieldCount, value: "" }];
+		let newMappedPorts = [...mappedPorts, { id: fieldCount, value: "" }];
+		setExposedPorts(newExposedPorts);
+		setMappedPorts(newMappedPorts);
 		setPortFields(newPortFields);
 	};
 
 	const removePortFields = (e, f) => {
 		let removePortId = Number(e.target.id);
+		let removePortFields = [...portFields];
+		let removeExposedFields = [...exposedPorts];
+		let removemappedFields = [...mappedPorts];
+
 		if (Number.isInteger(removePortId) > 0) {
-			let removePortFields = [...portFields];
 			portFields.forEach((e, i) => {
-				if (e.key === removePortId - 1) {
-					removePortFields.splice(i, -1);
+				if (e.key === removePortId) {
+					removeExposedFields.splice(i, 1);
+					removemappedFields.splice(i, 1);
+					removePortFields.splice(i, 1);
 				}
 			});
 			setPortFields(removePortFields);
+			setExposedPorts(removeExposedFields);
+			setMappedPorts(removemappedFields);
 		}
 	};
 
@@ -132,14 +147,37 @@ function Form() {
 		);
 	});
 
+	const handleExposedChange = e => {
+		let port = Number(e.target.id.split("exposed"));
+		console.log(e.target.id.split("exposed"));
+		let val = Number(e.target.value);
+		let newexposedFields = [...exposedPorts];
+
+		portFields.forEach((e, i) => {
+			if (e.key === port) {
+				newexposedFields[i].value = val;
+			}
+		});
+		setExposedPorts(newexposedFields);
+	};
+
+	const handleMappedChange = e => {
+		let port = Number(e.target.id.split("mapped"));
+		let val = Number(e.target.value);
+		let newmappedFields = [...mappedPorts];
+
+		portFields.forEach((e, i) => {
+			if (e.key === port) {
+				newmappedFields[i].value = val;
+			}
+		});
+		setMappedPorts(newmappedFields);
+	};
+
 	const formData = {
 		docker: {
-			image: {
-				name: baseImage,
-				tag: baseImageTag
-			},
 			container: {
-				base: baseImage,
+				base: baseImage + "-" + baseImageTag,
 				name: containerName,
 				hostname: hostName,
 				ports: {
@@ -185,10 +223,10 @@ function Form() {
 						});
 				}}
 			>
+				<FormLabel component="legend">
+					<h1>Select Base Image</h1>
+				</FormLabel>
 				<FormControl component="fieldset">
-					<FormLabel component="legend">
-						<h1>Select Base Image</h1>
-					</FormLabel>
 					<ToggleButtonGroup
 						value={baseImage}
 						exclusive
@@ -234,6 +272,7 @@ function Form() {
 						<Grid item xs={12} sm={6}>
 							<TextField
 								fullWidth
+								type="password"
 								id="root-password"
 								label="Root Password"
 								variant="outlined"
@@ -244,6 +283,7 @@ function Form() {
 						<Grid item xs={12} sm={6}>
 							<TextField
 								fullWidth
+								type="password"
 								id="user-password"
 								label="User Password"
 								variant="outlined"
@@ -291,7 +331,7 @@ function Form() {
 										value={mappedPorts[0]}
 										onChange={e => {
 											let newMappedPorts = [...mappedPorts];
-											newMappedPorts[0] = e.target.value;
+											newMappedPorts[0] = Number(e.target.value);
 											setMappedPorts(newMappedPorts);
 										}}
 										fullWidth
