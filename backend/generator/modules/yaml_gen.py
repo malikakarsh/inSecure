@@ -4,7 +4,7 @@ class YamlGen:
 
     def __init__(self, template: str):
         with open(template, 'r') as file:
-            self.yml = yaml.load(file, Loader=yaml.FullLoader)
+            self.yml = yaml.load(file)
 
     def populate(self, data: dict) -> dict:
         ports = data['docker']['container']['ports']
