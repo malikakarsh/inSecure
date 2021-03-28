@@ -1,11 +1,11 @@
-from os.path import dirname, realpath, join
+from os.path import dirname, realpath, join, basename
 from os import chdir, mkdir, walk
 from datetime import datetime
 from zipfile import ZipFile
 from shutil import rmtree
-from modules.env_gen import EnvGen
-from modules.yaml_gen import YamlGen
-from modules.dockerfile_gen import DockerfileGen
+from .modules.env_gen import EnvGen
+from .modules.yaml_gen import YamlGen
+from .modules.dockerfile_gen import DockerfileGen
 import logging
 
 def create_logger(log_file: str):
@@ -69,7 +69,7 @@ class ZipGen:
                             zipfile.write(join(root, file), f'{root}\\{file}')
             
             rmtree(self.outdir)
-            return f'{self.outdir}.zip'
+            return basename(f'{self.outdir}.zip')
         except Exception as e:
             self.logger.exception(str(e))
             return ''
