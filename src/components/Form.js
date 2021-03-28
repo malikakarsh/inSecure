@@ -168,17 +168,6 @@ function Form() {
 	};
 	console.log(formData);
 
-	// const handleSubmit = e => {
-	// 	e.preventDefault;
-	// 	console.log(formData);
-	// 	const x = fetch("/ssh", {
-	// 		method: "POST",
-	// 		body: JSON.stringify(formData)
-	// 	})
-	// 		.then(res => res.json())
-	// 		.then(json => console.log(json));
-	// };
-
 	return (
 		<div className={classes.root}>
 			<form
@@ -187,8 +176,13 @@ function Form() {
 					e.preventDefault();
 					console.log({ formData });
 					axios
-						.post("/ssh", JSON.stringify(formData))
-						.then(r => console.log(r));
+						.post("/ssh", formData)
+						.then(function (r) {
+							console.log(r);
+						})
+						.catch(function (e) {
+							console.log(e);
+						});
 				}}
 			>
 				<FormControl component="fieldset">

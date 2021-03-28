@@ -1,6 +1,5 @@
 import time
-import requests
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -15,7 +14,8 @@ def get_time():
     return {'time': time.time()}
 
 
-@app.route('/ssh')
-def create_ssh(request):
+@app.route('/ssh', methods=["POST"])
+def create_ssh():
     print(request.method)
-	return 0
+    print(request.data)
+    return "ok", 200
