@@ -1,4 +1,5 @@
 import time
+import requests
 from flask import Flask
 
 app = Flask(__name__)
@@ -15,6 +16,6 @@ def get_time():
 
 
 @app.route('/ssh')
-def create_ssg(request):
-    print(request)
+def create_ssh(request):
+    print(request.method)
 	return 0
