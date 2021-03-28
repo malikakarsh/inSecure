@@ -17,5 +17,5 @@ def get_time():
 @app.route('/ssh', methods=["POST"])
 def create_ssh():
     print(request.method)
-    print(request.data)
+    print(request.json())
     return "ok", 200

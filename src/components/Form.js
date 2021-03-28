@@ -7,8 +7,7 @@ import {
 	Select,
 	makeStyles,
 	FormLabel,
-	Button,
-	Input
+	Button
 } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { AddCircle, RemoveCircle } from "@material-ui/icons";
@@ -31,7 +30,8 @@ const useStyles = makeStyles(() => ({
 		justifyContent: "center",
 		alignItems: "center",
 		flexDirection: "column",
-		margin: 15
+		margin: 15,
+		maxWidth: "800px"
 	}
 }));
 
@@ -42,8 +42,9 @@ function Form() {
 		"https://d1q6f0aelx0por.cloudfront.net/product-logos/library-debian-logo.png?";
 
 	const imageTags = {
-		ubuntu: ["20.10", "20.04", "18.04", "16.04", "14.04"],
+		ubuntu: ["latest", "20.10", "20.04", "18.04", "16.04", "14.04"],
 		debian: [
+			"latest",
 			"stretch-slim",
 			"stretch-backports",
 			"stretch-20210326",
@@ -56,7 +57,7 @@ function Form() {
 
 	const classes = useStyles();
 	const [portFields, setPortFields] = useState([]);
-	const [baseImage, setBaseImage] = useState("ubuntu");
+	const [baseImage, setBaseImage] = useState("debian");
 	const [baseImageTag, setBaseImageTag] = useState(imageTags[baseImage][0]);
 	const [rootPassword, setRootPassword] = useState("");
 	const [userPassword, setUserPassword] = useState("");
@@ -70,7 +71,9 @@ function Form() {
 	const [maxRetry, setMaxretry] = useState(10);
 
 	const baseImageChange = (e, f) => {
-		setBaseImage(f);
+		if (f) {
+			setBaseImage(f);
+		}
 	};
 
 	const baseImageTagChange = e => {
@@ -134,12 +137,8 @@ function Form() {
 
 	const formData = {
 		docker: {
-			image: {
-				name: baseImage,
-				tag: baseImageTag
-			},
 			container: {
-				base: baseImage,
+				base: baseImage + "-" + baseImageTag,
 				name: containerName,
 				hostname: hostName,
 				ports: {
@@ -185,10 +184,10 @@ function Form() {
 						});
 				}}
 			>
+				<FormLabel component="legend">
+					<h1>Select Base Image</h1>
+				</FormLabel>
 				<FormControl component="fieldset">
-					<FormLabel component="legend">
-						<h1>Select Base Image</h1>
-					</FormLabel>
 					<ToggleButtonGroup
 						value={baseImage}
 						exclusive
@@ -234,6 +233,7 @@ function Form() {
 						<Grid item xs={12} sm={6}>
 							<TextField
 								fullWidth
+								type="password"
 								id="root-password"
 								label="Root Password"
 								variant="outlined"
@@ -244,6 +244,7 @@ function Form() {
 						<Grid item xs={12} sm={6}>
 							<TextField
 								fullWidth
+								type="password"
 								id="user-password"
 								label="User Password"
 								variant="outlined"
