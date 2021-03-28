@@ -1,4 +1,4 @@
-FROM debian:buster-slim AS base
+FROM image:tag AS base
 
 ARG TIMEZONE
 ARG USERNAME

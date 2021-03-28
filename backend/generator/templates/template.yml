@@ -27,5 +27,4 @@ services:
       - NET_ADMIN
     command: sudo /root/startup/startup.sh
     ports:
-      - "9001:80"
       - "${SSH_PORT}:22"
