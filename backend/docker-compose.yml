@@ -8,13 +8,18 @@ services:
         - USERNAME
         - ROOT_PASSWORD
         - USER_PASSWORD
+        - BANTIME
+        - MAXRETRY
     image: "${SSH_IMAGE_NAME}:${SSH_IMAGE_TAG}"
     container_name: "${SSH_CONTAINER_NAME}"
     restart: always
-    stdin_open: true
     tty: true
     environment:
       DEBIAN_FRONTEND: noninteractive
+    cap_add:
+      - NET_ADMIN
+    entrypoint: /bin/bash
+    command: /home/${USERNAME}/startup.sh
     ports:
       - "9001:80"
       - "${SSH_HOST_PORT}:${SSH_CONTAINER_PORT}"
