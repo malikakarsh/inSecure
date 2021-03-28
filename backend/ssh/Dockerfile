@@ -12,8 +12,12 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
     useradd -m ${USERNAME} && \
     apt-get update && \
     apt-get -y install --no-install-recommends sudo openssh-server iptables fail2ban rsyslog sshpass python3 && \
-    rm /etc/ssh/sshd_config
+    rm /etc/ssh/sshd_config /home/${USERNAME}/.bashrc && \
+    usermod -aG sudo root && \
+    usermod -aG sudo ${USERNAME} && \
+    chmod +s $(which sudo)
 
+COPY config/.bashrc /home/${USERNAME}
 COPY config/sshd_config /etc/ssh
 COPY config/jail.local /etc/fail2ban
 COPY startup.sh /home/${USERNAME}
@@ -27,7 +31,8 @@ RUN chmod +x /home/${USERNAME}/startup.sh && \
     echo "root:${ROOT_PASSWORD}" | chpasswd && \
     echo "${USERNAME}:${USER_PASSWORD}" | chpasswd && \
     echo "${USERNAME} ALL = NOPASSWD: $(which service)" >> /etc/sudoers && \
-    chown -R ${USERNAME}: /home/${USERNAME}
+    chown -R ${USERNAME}: /home/${USERNAME} && \
+    usermod --shell /bin/bash ${USERNAME}
 
 USER $USERNAME
 
