@@ -176,7 +176,7 @@ function Form() {
 					e.preventDefault();
 					console.log({ formData });
 					axios
-						.post("/ssh", formData)
+						.post("/config", formData)
 						.then(function (r) {
 							console.log(r);
 						})
