@@ -16,15 +16,16 @@ services:
       - ./config/.bashrc:/home/${USERNAME}/.bashrc
       - ./config/jail.local:/etc/fail2ban/jail.local
       - ./config/sshd_config:/etc/ssh/sshd_config
-      - ./startup/startup.sh:/root/startup.sh
+      - ./startup/startup.sh:/root/startup/startup.sh
     restart: always
     privileged: true
     tty: true
+    hostname: ${HOSTNAME}
     environment:
       DEBIAN_FRONTEND: noninteractive
     cap_add:
       - NET_ADMIN
-    command: sudo /root/startup.sh
+    command: sudo /root/startup/startup.sh
     ports:
       - "9001:80"
-      - "${SSH_HOST_PORT}:${SSH_CONTAINER_PORT}"
+      - "${SSH_PORT}:22"

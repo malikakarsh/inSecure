@@ -10,6 +10,7 @@ ARG MAXRETRY
 RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
     echo $TIMEZONE > /etc/timezone && \
     useradd -m ${USERNAME} && \
+    mkdir /root/startup && \
     apt-get update && \
     apt-get -y install --no-install-recommends sudo openssh-server iptables fail2ban rsyslog sshpass python3 jq moreutils && \
     rm /etc/ssh/sshd_config /home/${USERNAME}/.bashrc && \
@@ -17,9 +18,9 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
     usermod -aG sudo ${USERNAME} && \
     chmod +s $(which sudo)
 
-COPY startup/config.json /root/config.json
+COPY startup/config.json /root/startup
 
-WORKDIR /root
+WORKDIR /root/startup
 
 RUN jq ".ssh.username = \"${USERNAME}\"" config.json | sponge config.json && \
     jq ".fail2ban.bantime = \"${BANTIME}\"" config.json | sponge config.json && \

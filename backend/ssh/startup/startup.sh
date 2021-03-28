@@ -24,6 +24,5 @@ sudo service rsyslog start
 # just so that rsyslog created /var/log/auth.log
 dummy_ssh_login $username localhost
 sudo service fail2ban start
-sudo rm -f $config
 
 /bin/bash
