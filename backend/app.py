@@ -2,6 +2,8 @@ from flask import Flask, request, send_from_directory, current_app
 from os.path import join
 from generator.generator import ZipGen
 
+app = Flask(__name__)
+
 @app.route('/config', methods=["POST"])
 def server():
     data = request.get_json()
