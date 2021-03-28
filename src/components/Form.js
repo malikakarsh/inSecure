@@ -65,7 +65,7 @@ function Form() {
 	const [hostName, setHostname] = useState("");
 	const [containerName, setContainername] = useState("");
 	const [exposedPorts, setExposedPorts] = useState([22]);
-	const [mappedPorts, setMappedPorts] = useState([]);
+	const [mappedPorts, setMappedPorts] = useState([""]);
 	const [timeZone, setTimeZone] = useState("");
 	const [banTime, setBantime] = useState(1800);
 	const [maxRetry, setMaxretry] = useState(10);
@@ -93,6 +93,7 @@ function Form() {
 						variant="outlined"
 						type="number"
 						required={true}
+						onChange={handleMappedChange}
 					/>
 				</Grid>
 				<Grid item xs={12} sm={5}>
@@ -102,6 +103,7 @@ function Form() {
 						label={"Exposed Port-" + fieldCount}
 						variant="outlined"
 						type="number"
+						onChange={handleExposedChange}
 						required={true}
 					/>
 				</Grid>
@@ -110,20 +112,30 @@ function Form() {
 				</IconButton>
 			</Grid>
 		];
-
+		let newExposedPorts = [...exposedPorts, { id: fieldCount, value: "" }];
+		let newMappedPorts = [...mappedPorts, { id: fieldCount, value: "" }];
+		setExposedPorts(newExposedPorts);
+		setMappedPorts(newMappedPorts);
 		setPortFields(newPortFields);
 	};
 
 	const removePortFields = (e, f) => {
 		let removePortId = Number(e.target.id);
+		let removePortFields = [...portFields];
+		let removeExposedFields = [...exposedPorts];
+		let removemappedFields = [...mappedPorts];
+
 		if (Number.isInteger(removePortId) > 0) {
-			let removePortFields = [...portFields];
 			portFields.forEach((e, i) => {
-				if (e.key === removePortId - 1) {
-					removePortFields.splice(i, -1);
+				if (e.key === removePortId) {
+					removeExposedFields.splice(i, 1);
+					removemappedFields.splice(i, 1);
+					removePortFields.splice(i, 1);
 				}
 			});
 			setPortFields(removePortFields);
+			setExposedPorts(removeExposedFields);
+			setMappedPorts(removemappedFields);
 		}
 	};
 
@@ -134,6 +146,33 @@ function Form() {
 			</option>
 		);
 	});
+
+	const handleExposedChange = e => {
+		let port = Number(e.target.id.split("exposed"));
+		console.log(e.target.id.split("exposed"));
+		let val = Number(e.target.value);
+		let newexposedFields = [...exposedPorts];
+
+		portFields.forEach((e, i) => {
+			if (e.key === port) {
+				newexposedFields[i].value = val;
+			}
+		});
+		setExposedPorts(newexposedFields);
+	};
+
+	const handleMappedChange = e => {
+		let port = Number(e.target.id.split("mapped"));
+		let val = Number(e.target.value);
+		let newmappedFields = [...mappedPorts];
+
+		portFields.forEach((e, i) => {
+			if (e.key === port) {
+				newmappedFields[i].value = val;
+			}
+		});
+		setMappedPorts(newmappedFields);
+	};
 
 	const formData = {
 		docker: {
