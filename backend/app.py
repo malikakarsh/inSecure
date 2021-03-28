@@ -12,3 +12,9 @@ def index():
 @app.route('/time')
 def get_time():
     return {'time': time.time()}
+
+
+@app.route('/ssh')
+def create_ssg(request):
+    print(request)
+	return 0
