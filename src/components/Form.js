@@ -331,7 +331,7 @@ function Form() {
 										value={mappedPorts[0]}
 										onChange={e => {
 											let newMappedPorts = [...mappedPorts];
-											newMappedPorts[0] = e.target.value;
+											newMappedPorts[0] = Number(e.target.value);
 											setMappedPorts(newMappedPorts);
 										}}
 										fullWidth
