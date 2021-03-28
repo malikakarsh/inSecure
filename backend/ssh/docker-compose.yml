@@ -1,8 +1,8 @@
-version: "3.8"
+version: "3.3"
 services:
   ssh:
     build:
-      context: ./ssh
+      context: ./
       args:
         - TIMEZONE
         - USERNAME
@@ -12,14 +12,19 @@ services:
         - MAXRETRY
     image: "${SSH_IMAGE_NAME}:${SSH_IMAGE_TAG}"
     container_name: "${SSH_CONTAINER_NAME}"
+    volumes:
+      - ./config/.bashrc:/home/${USERNAME}/.bashrc
+      - ./config/jail.local:/etc/fail2ban/jail.local
+      - ./config/sshd_config:/etc/ssh/sshd_config
+      - ./startup/startup.sh:/root/startup.sh
     restart: always
+    privileged: true
     tty: true
     environment:
       DEBIAN_FRONTEND: noninteractive
     cap_add:
       - NET_ADMIN
-    entrypoint: /bin/bash
-    command: /home/${USERNAME}/startup.sh
+    command: sudo /root/startup.sh
     ports:
       - "9001:80"
       - "${SSH_HOST_PORT}:${SSH_CONTAINER_PORT}"
