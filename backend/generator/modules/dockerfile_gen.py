@@ -5,7 +5,7 @@ class DockerfileGen:
 
     def populate(self, data: dict):
         base = data['docker']['container']['base']
-        for i in len(self.dockerfile):
+        for i in range(len(self.dockerfile)):
             if not self.dockerfile[i].isspace():
                 break
         self.dockerfile[i] = f"FROM {base} AS base\n"
@@ -13,3 +13,7 @@ class DockerfileGen:
     def write(self, outfile: str):
         with open(outfile, 'w') as file:
             file.writelines(self.dockerfile)
+
+    def generate(self, data: dict, outfile: str):
+        self.populate(data)
+        self.write(outfile)
