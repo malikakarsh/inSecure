@@ -1,0 +1,38 @@
+{
+    "docker": {
+        "image": {
+            "name": "",
+            "tag": ""
+        },
+        "container": {
+            "base": "",
+            "name": "",
+            "hostname": "",
+            "ports": {
+                "exposed": [
+                    22
+                ],
+                "mapped": [
+
+                ]
+            }
+        }
+    },
+    "ssh": {
+        "timezone": "",
+        "fail2ban": {
+            "bantime": 0,
+            "maxretry": 0
+        },
+        "users": [
+            {
+                "username": "root",
+                "password": ""
+            },
+            {
+                "username": "",
+                "password": ""
+            }
+        ]
+    }
+}
